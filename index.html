@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hitung Mundur – 20 Oktober 2029</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --card: #12121a;
+      --border: #1e1e2e;
+      --accent: #7c3aed;
+      --accent2: #a855f7;
+      --gold: #f59e0b;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --glass: rgba(255,255,255,0.04);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Animated background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% -20%, rgba(124,58,237,0.15) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 110%, rgba(168,85,247,0.1) 0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle var(--d, 3s) ease-in-out infinite alternate;
+      opacity: 0;
+    }
+    @keyframes twinkle {
+      from { opacity: 0; transform: scale(1); }
+      to   { opacity: var(--o, 0.6); transform: scale(1.3); }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 60px 20px 80px;
+    }
+
+    /* ── HEADER ── */
+    header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(124,58,237,0.15);
+      border: 1px solid rgba(124,58,237,0.35);
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--accent2);
+      margin-bottom: 24px;
+      letter-spacing: 0.5px;
+    }
+    .badge::before { content: '✦'; font-size: 10px; }
+    h1 {
+      font-size: clamp(28px, 5vw, 52px);
+      font-weight: 900;
+      line-height: 1.15;
+      background: linear-gradient(135deg, #fff 30%, var(--accent2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 12px;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 16px;
+      font-weight: 400;
+    }
+
+    /* ── TIMER ── */
+    .timer-wrapper {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 48px 32px;
+      margin-bottom: 56px;
+      backdrop-filter: blur(12px);
+      position: relative;
+      overflow: hidden;
+    }
+    .timer-wrapper::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+
+    .target-label {
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 36px;
+    }
+
+    .timer-grid {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .time-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .time-num {
+      background: linear-gradient(145deg, #1a1a2e, #0f0f1a);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      width: clamp(80px, 14vw, 130px);
+      height: clamp(80px, 14vw, 130px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(32px, 6vw, 58px);
+      font-weight: 900;
+      color: #fff;
+      position: relative;
+      box-shadow: 0 0 0 1px rgba(124,58,237,0.08), inset 0 1px 0 rgba(255,255,255,0.05);
+      transition: transform 0.15s ease;
+    }
+    .time-num.flip {
+      animation: flip 0.35s ease;
+    }
+    @keyframes flip {
+      0%   { transform: scaleY(1); }
+      40%  { transform: scaleY(0.85); }
+      100% { transform: scaleY(1); }
+    }
+    .time-num span {
+      background: linear-gradient(180deg, #fff 0%, var(--accent2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .time-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .sep {
+      font-size: clamp(28px, 5vw, 48px);
+      font-weight: 900;
+      color: var(--accent);
+      margin-bottom: 32px;
+      opacity: 0.5;
+      animation: blink 1s step-start infinite;
+    }
+    @keyframes blink { 50% { opacity: 0.15; } }
+
+    .progress-bar {
+      margin-top: 36px;
+      height: 4px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border-radius: 4px;
+      transition: width 1s linear;
+    }
+    .progress-text {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ── COMMENTS ── */
+    .comment-section {
+      background: var(--glass);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 40px 32px;
+      backdrop-filter: blur(12px);
+      position: relative;
+      overflow: hidden;
+    }
+    .comment-section::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(168,85,247,0.5), transparent);
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .section-sub {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    /* Form */
+    .form-box {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+    .user-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 16px;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .regen-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      padding: 6px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .regen-btn:hover {
+      border-color: var(--accent2);
+      color: var(--accent2);
+      background: rgba(168,85,247,0.08);
+    }
+    .regen-btn svg { transition: transform 0.4s; }
+    .regen-btn:hover svg { transform: rotate(180deg); }
+
+    /* single merged username field */
+    .username-input {
+      flex: 1;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 8px 13px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s, opacity 0.25s;
+      min-width: 0;
+    }
+    .username-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(124,58,237,0.12);
+    }
+    /* random state: slightly dimmed */
+    .username-input.is-random {
+      opacity: 0.45;
+      cursor: text;
+    }
+    .username-input.is-random:focus {
+      opacity: 0.65;
+    }
+    .username-input.invalid {
+      border-color: #ef4444;
+      box-shadow: 0 0 0 3px rgba(239,68,68,0.12);
+    }
+    .username-hint {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 6px;
+      margin-bottom: 12px;
+      padding-left: 2px;
+    }
+
+    textarea {
+      width: 100%;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 14px;
+      resize: none;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      min-height: 100px;
+      line-height: 1.6;
+    }
+    textarea::placeholder { color: var(--muted); }
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(124,58,237,0.12);
+    }
+
+    .form-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+    }
+    .char-count { font-size: 12px; color: var(--muted); }
+    .char-count.warn { color: var(--gold); }
+
+    .submit-btn {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none;
+      border-radius: 10px;
+      padding: 10px 24px;
+      color: #fff;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(124,58,237,0.3);
+    }
+    .submit-btn:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 8px 28px rgba(124,58,237,0.4); }
+    .submit-btn:active { transform: translateY(0); }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    /* Comment list */
+    .comments-list { display: flex; flex-direction: column; gap: 16px; }
+
+    .comment-item {
+      display: flex;
+      gap: 14px;
+      padding: 18px;
+      background: rgba(255,255,255,0.025);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      animation: slideIn 0.4s cubic-bezier(0.16,1,0.3,1);
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .comment-body { flex: 1; min-width: 0; }
+    .comment-header {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+    .comment-author { font-weight: 700; font-size: 14px; }
+    .comment-time { font-size: 11px; color: var(--muted); }
+    .comment-text { font-size: 14px; line-height: 1.65; color: #c4cde0; word-break: break-word; }
+
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--muted);
+    }
+    .empty-state .icon { font-size: 40px; margin-bottom: 12px; }
+    .empty-state p { font-size: 14px; }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 100px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 8px 32px rgba(124,58,237,0.4);
+      z-index: 999;
+      transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.4s;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+    @media (max-width: 520px) {
+      .timer-wrapper, .comment-section { padding: 28px 18px; }
+      .time-num { border-radius: 12px; }
+      .sep { margin-bottom: 22px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="container">
+  <!-- Header -->
+  <header>
+    <div class="badge">Menghitung setiap detik</div>
+    <h1>Menuju 20 Oktober 2029</h1>
+    <p class="subtitle">Sisa waktu yang tersisa sebelum hari istimewa itu tiba</p>
+  </header>
+
+  <!-- Timer -->
+  <div class="timer-wrapper">
+    <p class="target-label">⏳ Target — 20 Oktober 2029</p>
+    <div class="timer-grid" id="timer">
+      <div class="time-block">
+        <div class="time-num" id="days-box"><span id="days">000</span></div>
+        <div class="time-label">Hari</div>
+      </div>
+      <div class="sep">:</div>
+      <div class="time-block">
+        <div class="time-num" id="hours-box"><span id="hours">00</span></div>
+        <div class="time-label">Jam</div>
+      </div>
+      <div class="sep">:</div>
+      <div class="time-block">
+        <div class="time-num" id="minutes-box"><span id="minutes">00</span></div>
+        <div class="time-label">Menit</div>
+      </div>
+      <div class="sep">:</div>
+      <div class="time-block">
+        <div class="time-num" id="seconds-box"><span id="seconds">00</span></div>
+        <div class="time-label">Detik</div>
+      </div>
+    </div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+    <p class="progress-text" id="progress-text">Menghitung...</p>
+  </div>
+
+  <!-- Comment Section -->
+  <div class="comment-section">
+    <h2 class="section-title">💬 Komentar Publik</h2>
+    <p class="section-sub">Tinggalkan pesanmu! Identitasmu akan diacak secara otomatis.</p>
+
+    <div class="form-box">
+      <div class="user-row" style="margin-bottom:6px">
+        <div class="avatar" id="user-avatar"></div>
+        <input
+          type="text"
+          id="manual-username"
+          class="username-input is-random"
+          maxlength="30"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button class="regen-btn" id="regen-btn" onclick="regenUser()" title="Acak ulang username">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/>
+            <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+          </svg>
+          Acak
+        </button>
+      </div>
+      <p class="username-hint" id="username-hint">Username acak aktif — ketik untuk ganti, kosongkan untuk kembali ke acak</p>
+      <textarea id="comment-input" maxlength="500" placeholder="Tulis komentarmu di sini..." rows="3"></textarea>
+      <div class="form-footer">
+        <span class="char-count" id="char-count">0 / 500</span>
+        <button class="submit-btn" id="submit-btn" onclick="submitComment()">✦ Publikasikan</button>
+      </div>
+    </div>
+
+    <div class="comments-list" id="comments-list">
+      <div class="empty-state">
+        <div class="icon">🌌</div>
+        <p>Belum ada komentar. Jadilah yang pertama!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── STARS ──────────────────────────────────────────
+  (function createStars() {
+    const c = document.getElementById('stars');
+    for (let i = 0; i < 120; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      const size = Math.random() * 2 + 0.5;
+      s.style.cssText = `
+        width:${size}px; height:${size}px;
+        top:${Math.random()*100}%;
+        left:${Math.random()*100}%;
+        --d:${2+Math.random()*4}s;
+        --o:${0.3+Math.random()*0.6};
+        animation-delay:${Math.random()*6}s;
+      `;
+      c.appendChild(s);
+    }
+  })();
+
+  // ── COUNTDOWN ──────────────────────────────────────
+  const TARGET = new Date('2029-10-20T00:00:00');
+  const START  = new Date('2024-01-01T00:00:00'); // reference for progress bar
+  const totalMs = TARGET - START;
+
+  const pad = (n, l=2) => String(n).padStart(l, '0');
+  let prev = {};
+
+  function flipAnim(id) {
+    const el = document.getElementById(id);
+    el.classList.remove('flip');
+    void el.offsetWidth;
+    el.classList.add('flip');
+  }
+
+  function updateTimer() {
+    const now  = new Date();
+    const diff = TARGET - now;
+
+    if (diff <= 0) {
+      document.getElementById('timer').innerHTML =
+        '<div style="font-size:28px;font-weight:900;color:var(--accent2);text-align:center;width:100%">🎉 Hari Istimewa Telah Tiba!</div>';
+      return;
+    }
+
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000)  / 60000);
+    const s = Math.floor((diff % 60000)    / 1000);
+
+    const vals = { days: pad(d,4), hours: pad(h), minutes: pad(m), seconds: pad(s) };
+
+    for (const [key, val] of Object.entries(vals)) {
+      if (val !== prev[key]) {
+        document.getElementById(key).textContent = val;
+        if (prev[key] !== undefined) flipAnim(key + '-box');
+      }
+    }
+    prev = { ...vals };
+
+    // progress
+    const elapsed = now - START;
+    const pct = Math.min(100, (elapsed / totalMs) * 100).toFixed(2);
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-text').textContent =
+      `${pct}% perjalanan sudah terlewati`;
+  }
+
+  updateTimer();
+  setInterval(updateTimer, 1000);
+
+  // ── USER GENERATOR ─────────────────────────────────
+  const adj = ['Galaksi','Bintang','Langit','Senja','Fajar','Bayang','Misteri','Cahaya','Angin','Ombak','Rimba','Pelangi','Kristal','Neon','Komet','Aurora','Badai','Bulan','Mahkota','Elang'];
+  const noun = ['Penjelajah','Pemimpi','Petualang','Pengamat','Pejuang','Pengelana','Penyair','Pemikir','Pawang','Pelayar','Pemahat','Penjaga','Pencari','Pemanah','Penghibur','Pelukis','Pewaris','Penyintas','Penyusun','Penari'];
+  const colors = ['#7c3aed','#a855f7','#ec4899','#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#84cc16'];
+
+  function randItem(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+  let currentUser = null;
+
+  function genUser() {
+    const a = randItem(adj), n = randItem(noun);
+    const num = Math.floor(Math.random() * 900) + 100;
+    const color = randItem(colors);
+    return { name: `${a}${n}${num}`, color, initials: a[0] + n[0] };
+  }
+
+  const manualInput = document.getElementById('manual-username');
+  const usernameHint = document.getElementById('username-hint');
+
+  function applyUser(u) {
+    currentUser = u;
+    // fill the single input with the random username (blurred)
+    manualInput.value = u.name;
+    manualInput.classList.add('is-random');
+    manualInput.classList.remove('invalid');
+    usernameHint.textContent = 'Username acak aktif — ketik untuk ganti, kosongkan untuk kembali ke acak';
+    usernameHint.style.color = '';
+    const av = document.getElementById('user-avatar');
+    av.textContent = u.initials;
+    av.style.background = `linear-gradient(135deg, ${u.color}, ${u.color}99)`;
+  }
+
+  function regenUser() {
+    applyUser(genUser());
+    showToast('✶ Username baru diacak!');
+  }
+
+  // ── MANUAL USERNAME INPUT ──────────────────────────
+  // When user starts typing, lift the blur
+  manualInput.addEventListener('focus', () => {
+    if (manualInput.classList.contains('is-random')) {
+      // select-all so user can overwrite instantly
+      manualInput.select();
+    }
+  });
+
+  manualInput.addEventListener('input', () => {
+    manualInput.value = manualInput.value.replace(/\s/g, '');
+    const val = manualInput.value;
+
+    if (manualInput.classList.contains('is-random')) {
+      // first keystroke: drop blur completely, clear field for fresh input
+      manualInput.classList.remove('is-random');
+      manualInput.value = '';
+      return;
+    }
+
+    if (val.length === 0) {
+      // cleared: restore random with blur
+      applyUser(currentUser);
+    } else if (val.length < 3) {
+      manualInput.classList.add('invalid');
+      usernameHint.textContent = '⚠️ Minimal 3 karakter.';
+      usernameHint.style.color = '#ef4444';
+      // update avatar preview
+      const av = document.getElementById('user-avatar');
+      av.textContent = val.slice(0,2).toUpperCase();
+    } else {
+      manualInput.classList.remove('invalid');
+      usernameHint.textContent = `✓ Username “${val}” siap dipakai.`;
+      usernameHint.style.color = '#10b981';
+      const color = colors[val.length % colors.length];
+      const av = document.getElementById('user-avatar');
+      av.textContent = val.slice(0,2).toUpperCase();
+      av.style.background = `linear-gradient(135deg, ${color}, ${color}99)`;
+    }
+  });
+
+  // helper: effective user at submit time
+  function getEffectiveUser() {
+    if (manualInput.classList.contains('is-random')) return currentUser;
+    const val = manualInput.value.trim();
+    if (val.length >= 3) {
+      const color = colors[val.length % colors.length];
+      return { name: val, color, initials: val.slice(0,2).toUpperCase() };
+    }
+    return currentUser;
+  }
+
+  // init user
+  applyUser(genUser());
+
+  // ── COMMENT FORM ───────────────────────────────────
+  const textarea = document.getElementById('comment-input');
+  const charCount = document.getElementById('char-count');
+
+  textarea.addEventListener('input', () => {
+    const len = textarea.value.length;
+    charCount.textContent = `${len} / 500`;
+    charCount.classList.toggle('warn', len > 400);
+  });
+
+  // key: Enter + Ctrl/Cmd
+  textarea.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') submitComment();
+  });
+
+  // ── JSONBIN.IO CONFIG ───────────────────────────────
+  const BIN_URL    = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+  const HEADERS_READ  = { 'X-Master-Key': MASTER_KEY };
+  const HEADERS_WRITE = { 'X-Master-Key': MASTER_KEY, 'Content-Type': 'application/json' };
+
+  let comments = [];  // in-memory, synced from bin
+
+  // Fetch all comments from JSONBin
+  async function loadComments() {
+    try {
+      const res  = await fetch(`${BIN_URL}/latest`, { headers: HEADERS_READ });
+      const json = await res.json();
+      comments   = Array.isArray(json.record) ? json.record : [];
+    } catch {
+      comments = [];
+    }
+    renderComments();
+  }
+
+  // Overwrite the entire bin with updated array
+  async function saveComments() {
+    await fetch(BIN_URL, {
+      method:  'PUT',
+      headers: HEADERS_WRITE,
+      body:    JSON.stringify(comments)
+    });
+  }
+
+  function renderComments() {
+    const list = document.getElementById('comments-list');
+    if (comments.length === 0) {
+      list.innerHTML = `
+        <div class="empty-state">
+          <div class="icon">🌌</div>
+          <p>Belum ada komentar. Jadilah yang pertama!</p>
+        </div>`;
+      return;
+    }
+    list.innerHTML = [...comments].reverse().map(c => `
+      <div class="comment-item">
+        <div class="avatar" style="background:linear-gradient(135deg,${c.color},${c.color}99);width:38px;height:38px;font-size:13px;font-weight:800;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">${escHtml(c.initials)}</div>
+        <div class="comment-body">
+          <div class="comment-header">
+            <span class="comment-author" style="color:${c.color}">${escHtml(c.name)}</span>
+            <span class="comment-time">${c.time}</span>
+          </div>
+          <div class="comment-text">${escHtml(c.text).replace(/\n/g,'<br>')}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  async function submitComment() {
+    const text = textarea.value.trim();
+    if (!text) { showToast('⚠️ Komentar tidak boleh kosong!'); return; }
+    if (text.length > 500) { showToast('⚠️ Maksimal 500 karakter!'); return; }
+
+    const manualVal = manualInput.value.trim();
+    if (!manualInput.classList.contains('is-random') && manualVal.length > 0 && manualVal.length < 3) {
+      showToast('⚠️ Username manual minimal 3 karakter!');
+      manualInput.focus();
+      return;
+    }
+
+    const poster = getEffectiveUser();
+    const btn    = document.getElementById('submit-btn');
+
+    const now  = new Date();
+    const time = now.toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric' })
+                 + ' · ' + now.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' });
+
+    const newComment = {
+      id: Date.now(),
+      name: poster.name,
+      color: poster.color,
+      initials: poster.initials,
+      text,
+      time
+    };
+
+    // Optimistic UI: render immediately
+    comments.push(newComment);
+    renderComments();
+
+    // Reset form
+    textarea.value = '';
+    charCount.textContent = '0 / 500';
+    charCount.classList.remove('warn');
+    manualInput.value = '';
+    manualInput.classList.remove('invalid');
+    usernameHint.textContent = 'Username acak aktif — ketik untuk ganti, kosongkan untuk kembali ke acak';
+    usernameHint.style.color = '';
+    applyUser(genUser());
+
+    // Persist to JSONBin
+    btn.disabled = true;
+    btn.textContent = '⏳ Menyimpan…';
+    try {
+      await saveComments();
+      showToast('✅ Komentar berhasil dipublikasikan!');
+    } catch {
+      showToast('❌ Gagal menyimpan. Coba lagi!');
+      // rollback optimistic
+      comments.pop();
+      renderComments();
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '✦ Publikasikan';
+    }
+  }
+
+  // ── TOAST ──────────────────────────────────────────
+  let toastTimer = null;
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // ── INIT ───────────────────────────────────────────
+  loadComments();
+</script>
+</body>
+</html>
