@@ -1,0 +1,15 @@
+# Environment secrets – JANGAN pernah di-commit!
+.env
+.env.local
+.env.*.local
+
+# Vercel
+.vercel
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/

@@ -705,32 +705,38 @@
     if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') submitComment();
   });
 
-  // ── JSONBIN.IO CONFIG ───────────────────────────────
-  const BIN_URL    = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
-  const HEADERS_READ  = { 'X-Master-Key': MASTER_KEY };
-  const HEADERS_WRITE = { 'X-Master-Key': MASTER_KEY, 'Content-Type': 'application/json' };
+  // ── API CONFIG ─────────────────────────────────────
+  // Key disimpan di server (.env / Vercel Environment Variables)
+  // Frontend hanya berbicara dengan /api/comment (serverless function)
+  const API_URL = '/api/comment';
 
-  let comments = [];  // in-memory, synced from bin
+  let comments = [];  // in-memory, synced from server
 
-  // Fetch all comments from JSONBin
+  // Fetch all comments via serverless function
   async function loadComments() {
     try {
-      const res  = await fetch(`${BIN_URL}/latest`, { headers: HEADERS_READ });
+      const res  = await fetch(API_URL);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
-      comments   = Array.isArray(json.record) ? json.record : [];
+      comments   = Array.isArray(json.comments) ? json.comments : [];
     } catch {
       comments = [];
     }
     renderComments();
   }
 
-  // Overwrite the entire bin with updated array
-  async function saveComments() {
-    await fetch(BIN_URL, {
-      method:  'PUT',
-      headers: HEADERS_WRITE,
-      body:    JSON.stringify(comments)
+  // POST komentar baru via serverless function
+  async function saveComments(newComment) {
+    const res = await fetch(API_URL, {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(newComment)
     });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `HTTP ${res.status}`);
+    }
+    return res.json();
   }
 
   function renderComments() {
@@ -803,14 +809,14 @@
     usernameHint.style.color = '';
     applyUser(genUser());
 
-    // Persist to JSONBin
+    // Persist via serverless function
     btn.disabled = true;
     btn.textContent = '⏳ Menyimpan…';
     try {
-      await saveComments();
+      await saveComments(newComment);
       showToast('✅ Komentar berhasil dipublikasikan!');
-    } catch {
-      showToast('❌ Gagal menyimpan. Coba lagi!');
+    } catch (err) {
+      showToast(`❌ ${err.message || 'Gagal menyimpan. Coba lagi!'}`);
       // rollback optimistic
       comments.pop();
       renderComments();
