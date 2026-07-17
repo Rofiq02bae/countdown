@@ -717,7 +717,7 @@
   // Frontend hanya berbicara dengan /api/comment (serverless function)
   const API_URL = '/api/comment';
 
-  let comments = [];  // in-memory, synced from server
+  var commentState = [];  // in-memory, synced from server
 
   // Fetch all comments via serverless function
   async function loadComments() {
@@ -725,9 +725,9 @@
       const res  = await fetch(API_URL);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
-      comments   = Array.isArray(json.comments) ? json.comments : [];
+      commentState = Array.isArray(json.comments) ? json.comments : [];
     } catch {
-      comments = [];
+      commentState = [];
     }
     renderComments();
   }
@@ -748,7 +748,7 @@
 
   function renderComments() {
     const list = document.getElementById('comments-list');
-    if (comments.length === 0) {
+    if (commentState.length === 0) {
       list.innerHTML = `
         <div class="empty-state">
           <div class="icon">🌌</div>
@@ -756,7 +756,7 @@
         </div>`;
       return;
     }
-    list.innerHTML = [...comments].reverse().map(c => `
+    list.innerHTML = [...commentState].reverse().map(c => `
       <div class="comment-item">
         <div class="avatar" style="background:linear-gradient(135deg,${c.color},${c.color}99);width:38px;height:38px;font-size:13px;font-weight:800;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0">${escHtml(c.initials)}</div>
         <div class="comment-body">
@@ -803,7 +803,7 @@
     };
 
     // Optimistic UI: render immediately
-    comments.push(newComment);
+    commentState.push(newComment);
     renderComments();
 
     // Reset form
@@ -825,7 +825,7 @@
     } catch (err) {
       showToast(`❌ ${err.message || 'Gagal menyimpan. Coba lagi!'}`);
       // rollback optimistic
-      comments.pop();
+      commentState.pop();
       renderComments();
     } finally {
       btn.disabled = false;

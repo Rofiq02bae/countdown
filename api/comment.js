@@ -9,12 +9,14 @@ export default async function handler(req, res) {
     return res.status(200).end();
   }
 
-  const MASTER_KEY = process.env.JSONBIN_MASTER_KEY;
-  const BIN_ID     = process.env.JSONBIN_BIN_ID;
+  const MASTER_KEY = process.env.JSONBIN_MASTER_KEY || process.env.MASTER_KEY;
+  const BIN_ID     = process.env.JSONBIN_BIN_ID || process.env.BIN_ID;
   const BIN_URL    = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
   if (!MASTER_KEY || !BIN_ID) {
-    return res.status(500).json({ error: 'Server misconfigured: missing env vars.' });
+    return res.status(500).json({
+      error: 'Server misconfigured: missing env vars. Set JSONBIN_MASTER_KEY and JSONBIN_BIN_ID in Vercel, or use MASTER_KEY and BIN_ID as fallback names.'
+    });
   }
 
   // ── GET: ambil semua komentar ──────────────────────────
