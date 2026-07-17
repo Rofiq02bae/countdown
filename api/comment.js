@@ -10,12 +10,18 @@ export default async function handler(req, res) {
   }
 
   const MASTER_KEY = process.env.JSONBIN_MASTER_KEY || process.env.MASTER_KEY;
+  const ACCESS_KEY = process.env.JSONBIN_ACCESS_KEY || process.env.JSONBIN_X_ACCESS_KEY || process.env.ACCESS_KEY || process.env.X_ACCESS_KEY;
   const BIN_ID     = process.env.JSONBIN_BIN_ID || process.env.BIN_ID;
   const BIN_URL    = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+  const AUTH_HEADER = MASTER_KEY
+    ? { 'X-Master-Key': MASTER_KEY }
+    : ACCESS_KEY
+      ? { 'X-Access-Key': ACCESS_KEY }
+      : null;
 
-  if (!MASTER_KEY || !BIN_ID) {
+  if (!AUTH_HEADER || !BIN_ID) {
     return res.status(500).json({
-      error: 'Server misconfigured: missing env vars. Set JSONBIN_MASTER_KEY and JSONBIN_BIN_ID in Vercel, or use MASTER_KEY and BIN_ID as fallback names.'
+      error: 'Server misconfigured: missing env vars. Set JSONBIN_MASTER_KEY and JSONBIN_BIN_ID, or JSONBIN_ACCESS_KEY and JSONBIN_BIN_ID in Vercel.'
     });
   }
 
@@ -47,7 +53,7 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     try {
       const data = await fetchJsonBin(`${BIN_URL}/latest`, {
-        headers: { 'X-Master-Key': MASTER_KEY }
+        headers: AUTH_HEADER
       }, 'JSONBin GET');
       const comments = Array.isArray(data.record) ? data.record : [];
       return res.status(200).json({ comments });
@@ -75,7 +81,7 @@ export default async function handler(req, res) {
 
       // Ambil data terkini dulu (baca → tulis agar tidak conflict)
       const readData = await fetchJsonBin(`${BIN_URL}/latest`, {
-        headers: { 'X-Master-Key': MASTER_KEY }
+        headers: AUTH_HEADER
       }, 'JSONBin READ');
       const existing  = Array.isArray(readData.record) ? readData.record : [];
 
@@ -93,7 +99,7 @@ export default async function handler(req, res) {
       // Tulis kembali ke JSONBin
       const writeRes = await fetch(BIN_URL, {
         method:  'PUT',
-        headers: { 'X-Master-Key': MASTER_KEY, 'Content-Type': 'application/json' },
+        headers: { ...AUTH_HEADER, 'Content-Type': 'application/json' },
         body:    JSON.stringify(updated)
       });
       if (!writeRes.ok) {
