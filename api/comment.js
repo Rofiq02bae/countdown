@@ -19,19 +19,41 @@ export default async function handler(req, res) {
     });
   }
 
+  async function fetchJsonBin(url, init, label) {
+    const response = await fetch(url, init);
+    const raw = await response.text();
+    let parsed = null;
+
+    try {
+      parsed = raw ? JSON.parse(raw) : null;
+    } catch {
+      parsed = null;
+    }
+
+    if (!response.ok) {
+      const upstreamMessage =
+        parsed?.message ||
+        parsed?.error ||
+        raw ||
+        response.statusText ||
+        'Unknown JSONBin error';
+      throw new Error(`${label} failed (${response.status}): ${upstreamMessage}`);
+    }
+
+    return parsed ?? {};
+  }
+
   // ── GET: ambil semua komentar ──────────────────────────
   if (req.method === 'GET') {
     try {
-      const r = await fetch(`${BIN_URL}/latest`, {
+      const data = await fetchJsonBin(`${BIN_URL}/latest`, {
         headers: { 'X-Master-Key': MASTER_KEY }
-      });
-      if (!r.ok) throw new Error(`JSONBin GET failed: ${r.status}`);
-      const data = await r.json();
+      }, 'JSONBin GET');
       const comments = Array.isArray(data.record) ? data.record : [];
       return res.status(200).json({ comments });
     } catch (err) {
       console.error('[GET comments]', err);
-      return res.status(502).json({ error: 'Gagal memuat komentar.' });
+      return res.status(502).json({ error: err.message || 'Gagal memuat komentar.' });
     }
   }
 
@@ -52,11 +74,9 @@ export default async function handler(req, res) {
       }
 
       // Ambil data terkini dulu (baca → tulis agar tidak conflict)
-      const readRes = await fetch(`${BIN_URL}/latest`, {
+      const readData = await fetchJsonBin(`${BIN_URL}/latest`, {
         headers: { 'X-Master-Key': MASTER_KEY }
-      });
-      if (!readRes.ok) throw new Error(`JSONBin READ failed: ${readRes.status}`);
-      const readData  = await readRes.json();
+      }, 'JSONBin READ');
       const existing  = Array.isArray(readData.record) ? readData.record : [];
 
       const newComment = {
@@ -76,12 +96,27 @@ export default async function handler(req, res) {
         headers: { 'X-Master-Key': MASTER_KEY, 'Content-Type': 'application/json' },
         body:    JSON.stringify(updated)
       });
-      if (!writeRes.ok) throw new Error(`JSONBin WRITE failed: ${writeRes.status}`);
+      if (!writeRes.ok) {
+        const raw = await writeRes.text();
+        let parsed = null;
+        try {
+          parsed = raw ? JSON.parse(raw) : null;
+        } catch {
+          parsed = null;
+        }
+        const upstreamMessage =
+          parsed?.message ||
+          parsed?.error ||
+          raw ||
+          writeRes.statusText ||
+          'Unknown JSONBin error';
+        throw new Error(`JSONBin WRITE failed (${writeRes.status}): ${upstreamMessage}`);
+      }
 
       return res.status(200).json({ success: true, comment: newComment });
     } catch (err) {
       console.error('[POST comment]', err);
-      return res.status(502).json({ error: 'Gagal menyimpan komentar.' });
+      return res.status(502).json({ error: err.message || 'Gagal menyimpan komentar.' });
     }
   }
 
