@@ -599,9 +599,9 @@
   setInterval(updateTimer, 1000);
 
   // ── USER GENERATOR ─────────────────────────────────
-  const adj = ['Galaksi','Bintang','Langit','Senja','Fajar','Bayang','Misteri','Cahaya','Angin','Ombak','Rimba','Pelangi','Kristal','Neon','Komet','Aurora','Badai','Bulan','Mahkota','Elang'];
-  const noun = ['Penjelajah','Pemimpi','Petualang','Pengamat','Pejuang','Pengelana','Penyair','Pemikir','Pawang','Pelayar','Pemahat','Penjaga','Pencari','Pemanah','Penghibur','Pelukis','Pewaris','Penyintas','Penyusun','Penari'];
-  const colors = ['#7c3aed','#a855f7','#ec4899','#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#84cc16'];
+  const adj = ['Galaksi','Bintang','Langit','Senja','Fajar','Bayang','Misteri','Cahaya','Angin','Ombak','Rimba','Pelangi','Kristal','Neon','Komet','Aurora','Badai','Bulan','Mahkota','Elang','Listrik','Surga','Lautan','Gurun','Dingin','Panas','Emas','Perak','Baja','Api','Air','Tanah','Angkasa','Pusaran','Tornado','Bianglala','Salju','Guntur','Awan','Gerhana','Lava','Intan','Safir','Zamrud','Liar','Gelap','Terang','Suci','Kosmik','Sakti'];
+  const noun = ['Penjelajah','Pemimpi','Petualang','Pengamat','Pejuang','Pengelana','Penyair','Pemikir','Pawang','Pelayar','Pemahat','Penjaga','Pencari','Pemanah','Penghibur','Pelukis','Pewaris','Penyintas','Penyusun','Penari','Rajawali','Satria','Ksatria','Pangeran','Raja','Duta','Pahlawan','Seniman','Ahli','Master','Suhu','Doktor','Kapten','Jenderal','Komandan','Kaisar','Dewa','Dewi','Naga','Phoenix','Garuda','Singa','Harimau','Serigala','Ranger','Ninja','Pendekar','Penakluk','Penyelamat','Buronan'];
+  const colors = ['#7c3aed','#a855f7','#ec4899','#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#84cc16','#f97316','#14b8a6','#e879f9','#fb7185','#38bdf8','#a3e635','#facc15','#c084fc','#2dd4bf','#fb923c'];
 
   function randItem(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
@@ -611,7 +611,14 @@
     const a = randItem(adj), n = randItem(noun);
     const num = Math.floor(Math.random() * 900) + 100;
     const color = randItem(colors);
-    return { name: `${a}${n}${num}`, color, initials: a[0] + n[0] };
+    const pattern = Math.floor(Math.random() * 3);
+    let name;
+    switch (pattern) {
+      case 0: name = `${a}${n}${num}`; break;
+      case 1: name = `${a}_${n}_${num}`; break;
+      case 2: name = `${num}${n}${a}`; break;
+    }
+    return { name, color, initials: a[0] + n[0] };
   }
 
   const manualInput = document.getElementById('manual-username');
